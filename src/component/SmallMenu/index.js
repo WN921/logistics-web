@@ -1,36 +1,46 @@
 import React, { Fragment } from 'react';
-
 import { Menu, Dropdown, Button } from 'antd';
 import { DownOutlined, PoweroffOutlined } from '@ant-design/icons';
 
-const menu = (
-    <Menu>
-        <Menu.Item>
-            <a target="_blank" rel="noopener noreferrer" href="http://www.alipay.com/">
-                1st menu item
-      </a>
-        </Menu.Item>
-        <Menu.Item>
-            <a target="_blank" rel="noopener noreferrer" href="http://www.taobao.com/">
-                2nd menu item
-      </a>
-        </Menu.Item>
-        <Menu.Item>
-            <a target="_blank" rel="noopener noreferrer" href="http://www.tmall.com/">
-                3rd menu item
-      </a>
-        </Menu.Item>
-        <Menu.Item danger>a danger item</Menu.Item>
-    </Menu>
-);
 
-export default function SmallMenu() {
+export default function SmallMenu(props) {
+    let { UavList, SelectedUavId } = props;
+    UavList = UavList ? UavList.toJS() : [];
+
+    const { getUavListDispatch, getOrderListDispatch, changeSelectedUavIdDispatch } = props;
+
+    const clickDropdown = ({key}) => {
+        changeSelectedUavIdDispatch(parseInt(key))
+    }
+
+    const menu = (
+        <Menu onClick={clickDropdown}>
+            {UavList.map((item, index) => {
+                if (index >= 0) {
+                    return (
+                        <Menu.Item key={item.nodeID}>
+                            <a target="_blank">
+                                无人机{item.nodeID}号
+                            </a>
+                        </Menu.Item>
+                    )
+                }
+            })}
+        </Menu>
+    )
+
+    const clickHandler = () => {
+        setInterval(() => {
+            getUavListDispatch();
+            getOrderListDispatch();
+        }, 2000);
+    }
     return (
         <Fragment>
             <Button
                 type="primary"
                 icon={<PoweroffOutlined />}
-                onClick={() => {}}
+                onClick={clickHandler}
             >
                 开始仿真
             </Button>

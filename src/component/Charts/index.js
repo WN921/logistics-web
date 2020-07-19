@@ -3,16 +3,41 @@ import { ChartsContainer } from './style';
 import echarts from 'echarts';
 import { Divider } from 'antd';
 
-export default function Charts() {
+export default function Charts(props) {
+    let { UavList, OrderList } = props;
+    UavList = UavList ? UavList.toJS() : [];
+    OrderList = OrderList ? OrderList.toJS() : [];
+
+    const { SelectedUavId } = props;
+
+    let FinishedOrder = 0;
+    let DispatchingOrder = 0;
+    let WaitingOrder = 0;
+    for (let i = 0; i < OrderList.length; i++) {
+        if (OrderList[i].orderState === '等待中') {
+            WaitingOrder++;
+        }
+        else if (OrderList[i].orderState === '完成') {
+            FinishedOrder++;
+        }
+        else if (OrderList[i].orderState === '配送中') {
+            DispatchingOrder++;
+        }
+    }
+
+
     useEffect(() => {
-        const myChart = echarts.init(document.getElementById('radar1'));
-        const option = {
+        const radarChart = echarts.init(document.getElementById('radar'));
+        const radarOption = {
             title: {
-                text: '基础雷达图'
+                text: '无人机能力',
+                
             },
-            tooltip: {},
+
             legend: {
-                data: ['预算分配（Allocated Budget）', '实际开销（Actual Spending）']
+                data: ['上限', '现状'],
+                left : "2%",
+                bottom : "2%"
             },
             radar: {
                 // shape: 'circle',
@@ -25,89 +50,99 @@ export default function Charts() {
                     }
                 },
                 indicator: [
-                    { name: '销售（sales）', max: 6500 },
-                    { name: '管理（Administration）', max: 16000 },
-                    { name: '信息技术（Information Techology）', max: 30000 },
-                    { name: '客服（Customer Support）', max: 38000 },
-                    { name: '研发（Development）', max: 52000 },
-                    { name: '市场（Marketing）', max: 25000 }
+                    { name: '移动-水平移速', max: 10 },
+                    { name: '感知-范围', max: 100 },
+                    { name: '装载-重量', max: 50 },
+                    { name: '计算-速度', max: 100 },
+                    { name: '通信-范围', max: 150 },
+                    { name: '巡航-电量%', max: 100 }
                 ]
             },
             series: [{
-                name: '预算 vs 开销（Budget vs spending）',
+                name: '上限 vs 现状',
                 type: 'radar',
                 // areaStyle: {normal: {}},
                 data: [
                     {
-                        value: [4300, 10000, 28000, 35000, 50000, 19000],
-                        name: '预算分配（Allocated Budget）'
+                        value: [
+                            UavList.length !== 0 ? UavList[SelectedUavId].moveAbilityHorizontalVelocity : 0,
+                            UavList.length !== 0 ? UavList[SelectedUavId].senseAbilityDistance : 0,
+                            UavList.length !== 0 ? UavList[SelectedUavId].loadAbilityMaxWeight : 0,
+                            UavList.length !== 0 ? UavList[SelectedUavId].computeAbilitySpeed : 0,
+                            UavList.length !== 0 ? UavList[SelectedUavId].communicateAbilityDistance : 0,
+                            100
+                        ],
+                        name: '上限'
                     },
                     {
-                        value: [5000, 14000, 28000, 31000, 42000, 21000],
-                        name: '实际开销（Actual Spending）'
+                        value: [
+                            UavList.length !== 0 ? UavList[SelectedUavId].moveAbilityHorizontalVelocity : 0,
+                            UavList.length !== 0 ? UavList[SelectedUavId].senseAbilityDistance : 0,
+                            UavList.length !== 0 ? UavList[SelectedUavId].loadAbilityActualLoadWeight : 0,
+                            UavList.length !== 0 ? UavList[SelectedUavId].computeAbilitySpeed : 0,
+                            UavList.length !== 0 ? UavList[SelectedUavId].communicateAbilityDistance : 0,
+                            UavList.length !== 0 ? UavList[SelectedUavId].cruisingAbilityPowerMarginPercentage : 0
+                        ],
+                        name: '现状'
                     }
                 ]
             }]
         };
 
         // 使用刚指定的配置项和数据显示图表。
-        myChart.setOption(option);
+        radarChart.setOption(radarOption);
 
-        const myChart2 = echarts.init(document.getElementById('radar2'));
-        const option2 = {
+
+
+
+
+
+        const pieChart = echarts.init(document.getElementById('pie'));
+        const pieOption = {
             title: {
-                text: '基础雷达图'
+                text: '订单执行情况',
+                left: 'center'
             },
-            tooltip: {},
+            tooltip: {
+                trigger: 'item',
+                formatter: '{a} <br/>{b} : {c} ({d}%)'
+            },
             legend: {
-                data: ['预算分配（Allocated Budget）', '实际开销（Actual Spending）']
+                orient: 'vertical',
+                left: 'left',
+                data: ['已完成订单', '派送中订单', '等待中订单']
             },
-            radar: {
-                // shape: 'circle',
-                name: {
-                    textStyle: {
-                        color: '#fff',
-                        backgroundColor: '#999',
-                        borderRadius: 3,
-                        padding: [3, 5]
+            series: [
+                {
+                    name: '访问来源',
+                    type: 'pie',
+                    radius: '55%',
+                    center: ['50%', '60%'],
+                    data: [
+                        { value: FinishedOrder, name: '已完成订单' },
+                        { value: DispatchingOrder, name: '派送中订单' },
+                        { value: WaitingOrder, name: '等待中订单' },
+                    ],
+                    emphasis: {
+                        itemStyle: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
                     }
-                },
-                indicator: [
-                    { name: '销售（sales）', max: 6500 },
-                    { name: '管理（Administration）', max: 16000 },
-                    { name: '信息技术（Information Techology）', max: 30000 },
-                    { name: '客服（Customer Support）', max: 38000 },
-                    { name: '研发（Development）', max: 52000 },
-                    { name: '市场（Marketing）', max: 25000 }
-                ]
-            },
-            series: [{
-                name: '预算 vs 开销（Budget vs spending）',
-                type: 'radar',
-                // areaStyle: {normal: {}},
-                data: [
-                    {
-                        value: [4300, 10000, 28000, 35000, 50000, 19000],
-                        name: '预算分配（Allocated Budget）'
-                    },
-                    {
-                        value: [5000, 14000, 28000, 31000, 42000, 21000],
-                        name: '实际开销（Actual Spending）'
-                    }
-                ]
-            }]
+                }
+            ]
         };
-
         // 使用刚指定的配置项和数据显示图表。
-        myChart2.setOption(option2);
+        pieChart.setOption(pieOption);
 
 
     })
     return (
         <ChartsContainer>
-            <div class='chartItem' id='radar1' />
+            <div class='chartItem' id='radar' />
             <Divider />
-            <div class='chartItem' id='radar2' />
+            <div class='chartItem' id='pie' />
         </ChartsContainer>
     )
 }

@@ -1,0 +1,3 @@
+export const CHANGE_UAVLIST = 'monitor/CHANGE_UAVLIST';
+export const CHANGE_ORDERLIST = 'monitor/CHANGE_ORDERLIST';
+export const CHANGE_SELECTEDUAVID = 'monitor/CHANGE_SELECTEDUAVID'
