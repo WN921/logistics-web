@@ -28,30 +28,37 @@ export default function InformationList(props) {
     }
     let AveragedTime = TotalWaitTime / OrderNumber;
 
-
+    function findSelectedUav(UavList, SelectedUavId){
+        for(let i = 0; i < UavList.length; i++){
+            if(Number(UavList[i].nodeID) === SelectedUavId){
+                return UavList[i];
+            }
+        }
+    }
+    const SelectedUav = findSelectedUav(UavList, SelectedUavId);
 
     return (
         <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", height: "100%" }}>
             <Descriptions title="指定无人机信息" style={{ margin: "auto" }}>
                 <Descriptions.Item label="编号">{SelectedUavId}</Descriptions.Item>
-                <Descriptions.Item label="速度（km/s)">
+                <Descriptions.Item label="速度（m/s)">
                     {
-                        UavList.length > 0 ? fix(UavList[SelectedUavId].moveVelocityX) + ',' + fix(UavList[SelectedUavId].moveVelocityY) + ',' + fix(UavList[SelectedUavId].moveVelocityZ) : "无"
+                        UavList.length > 0 ? fix(SelectedUav.moveVelocityX) + ',' + fix(SelectedUav.moveVelocityY) + ',' + fix(SelectedUav.moveVelocityZ) : "无"
                     }
                 </Descriptions.Item>
                 <Descriptions.Item label="位置">
                     {
-                        UavList.length > 0 ? fix(UavList[SelectedUavId].longitude) + ',' + fix(UavList[SelectedUavId].latitude) : '无'
+                        UavList.length > 0 ? fix(SelectedUav.longitude) + ',' + fix(SelectedUav.latitude) : '无'
                     }
                 </Descriptions.Item>
                 <Descriptions.Item label="货重（kg）">
                     {
-                        UavList.length > 0 ? UavList[SelectedUavId].loadAbilityActualLoadWeight : '无'
+                        UavList.length > 0 ? SelectedUav.loadAbilityActualLoadWeight : '无'
                     }
                 </Descriptions.Item>
                 <Descriptions.Item label="剩余空间（g）">
                     {
-                        UavList.length > 0 ? UavList[SelectedUavId].cruisingAbilityCapacity : '无'
+                        UavList.length > 0 ? SelectedUav.cruisingAbilityCapacity : '无'
                     }
                 </Descriptions.Item>
             </Descriptions>
@@ -76,6 +83,7 @@ export default function InformationList(props) {
                                 <div>目的地：{fix(item.orderDestinationLongitude) + "," + fix(item.orderDestinationLatitude)}</div>
                                 <div>订单重量：{fix(item.orderWeight)}</div>
                                 <div>订单状态：{item.orderState} </div>
+                                <div>执行无人机: {item.uavId}</div>
                             </div>)()}
                         />
                     </List.Item>

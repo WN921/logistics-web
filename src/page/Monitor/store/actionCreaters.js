@@ -1,6 +1,7 @@
 import * as actionTypes from './constants';
 import { fromJS } from 'immutable';
 import { getUavListRequest, getOrderListRequest } from '../../../api/request';
+import { transform } from '../../../api/utils';
 export const changeUavList = (data) => ({
     type : actionTypes.CHANGE_UAVLIST,
     data : fromJS(data)
@@ -14,20 +15,6 @@ export const changeSelectedUavId = (id) => ({
     type : actionTypes.CHANGE_SELECTEDUAVID,
     data : id,
 })
-
-const transform = (origin, isLong = true) => {
-    const defaultLongitude = 108.7652;
-    const defaultLatitude = 34.0328;
-
-    let result;
-    if(isLong){
-        result = defaultLongitude + (origin / 10000);
-    }
-    else{
-        result = defaultLatitude + (origin / 10000);
-    }
-    return result;
-}
 
 export const getUavList = () => {
     return (dispatch) => {

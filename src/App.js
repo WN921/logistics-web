@@ -4,8 +4,10 @@ import { Layout, Menu } from 'antd';
 import {
 	DesktopOutlined,
 	PieChartOutlined,
+	VideoCameraOutlined
 } from '@ant-design/icons';
 import Monitor from './page/Monitor';
+import Simulation from './page/Simulation';
 import Playback from './page/Playback';
 import {
 	Switch,
@@ -36,6 +38,9 @@ class App extends React.Component {
 							<Link to="/">实时监控</Link>
 						</Menu.Item>
 						<Menu.Item key="2" icon={<DesktopOutlined />}>
+							<Link to='/Simulation'>实时仿真</Link>
+						</Menu.Item>
+						<Menu.Item key="3" icon={<VideoCameraOutlined />}>
 							<Link to='/Plyaback'>轨迹回放</Link>
 						</Menu.Item>
 					</Menu>
@@ -49,11 +54,14 @@ class App extends React.Component {
 						<Route path="/Plyaback">
 							<Playback />
 						</Route>
+						<Route path="/Simulation">
+							<Simulation />
+						</Route>
 						<Route path="/">
 							<Monitor />
 						</Route>
 					</Switch>
-					<Footer style={{ textAlign: 'center' }}>Ant Design ©2018 Created by Ant UED</Footer>
+					<Footer style={{ textAlign: 'center' }}></Footer>
 				</Layout>
 			</Layout>
 		);

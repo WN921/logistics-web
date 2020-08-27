@@ -17,7 +17,10 @@ function Monitor(props) {
             <Row>
                 <Col span={12}>
                     <div className="site-layout-background col" >
-                        <Map UavList={UavList} OrderList={OrderList} />
+                        <Map
+                        UavList={UavList}
+                        OrderList={OrderList}
+                        changeSelectedUavIdDispatch={changeSelectedUavIdDispatch} />
                     </div>
                 </Col>
                 <Col span={6}>

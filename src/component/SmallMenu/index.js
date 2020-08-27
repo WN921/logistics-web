@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState} from 'react';
 import { Menu, Dropdown, Button } from 'antd';
 import { DownOutlined, PoweroffOutlined } from '@ant-design/icons';
 
@@ -9,7 +9,9 @@ export default function SmallMenu(props) {
 
     const { getUavListDispatch, getOrderListDispatch, changeSelectedUavIdDispatch } = props;
 
-    const clickDropdown = ({key}) => {
+    let [IntervalIdState, setIntervalIdState] = useState(null);
+
+    const clickDropdown = ({ key }) => {
         changeSelectedUavIdDispatch(parseInt(key))
     }
 
@@ -29,20 +31,28 @@ export default function SmallMenu(props) {
         </Menu>
     )
 
-    const clickHandler = () => {
-        setInterval(() => {
-            getUavListDispatch();
-            getOrderListDispatch();
-        }, 2000);
-    }
     return (
         <Fragment>
             <Button
                 type="primary"
                 icon={<PoweroffOutlined />}
-                onClick={clickHandler}
+                onClick={() => {
+                    setIntervalIdState(
+                        setInterval(() => {
+                            getUavListDispatch();
+                            getOrderListDispatch();
+                        }, 2000)
+                    );
+                }}
             >
                 开始仿真
+            </Button>
+            <Button
+                onClick={() => {
+                    clearInterval(IntervalIdState);
+                }}
+            >
+                暂停仿真
             </Button>
             <Dropdown overlay={menu}>
                 <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>

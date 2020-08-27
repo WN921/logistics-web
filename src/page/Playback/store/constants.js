@@ -1,0 +1,2 @@
+export const CHANGE_HISTORY_LIST = 'palyback/CHANGE_HISTORY_LIST';
+export const CHANGE_SELECTED_RECORD = 'palyback/CHANGE_SELECTED_RECORD';
