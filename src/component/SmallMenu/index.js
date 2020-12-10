@@ -45,14 +45,14 @@ export default function SmallMenu(props) {
                     );
                 }}
             >
-                开始仿真
+                开始监控
             </Button>
             <Button
                 onClick={() => {
                     clearInterval(IntervalIdState);
                 }}
             >
-                暂停仿真
+                暂停监控
             </Button>
             <Dropdown overlay={menu}>
                 <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
